@@ -8,9 +8,12 @@ img_width, img_height = 128,128
 qty_class = 3
 
 #check image channels first or channel last
+print("Check channel position")
 if K.image_data_format() == "channels_first":
+    print("Image contain channels_first")
     input_shape = (1,img_width,img_height)
 else:
+    print("Image contain channels_last")
     input_shape = (img_width,img_height,1)
 
 def createModel():
