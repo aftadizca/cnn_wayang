@@ -61,4 +61,4 @@ with open("cnn/model.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
 myModel.save_weights("cnn/model.h5")
-print("Saved model to disk")
+print("Saved model to disk drive")
