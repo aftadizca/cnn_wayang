@@ -40,7 +40,7 @@ valid_generator = valid_datagen.flow_from_directory(
 myModel = model.createModel()
 #myModel.summary()
 
-print("Start train Model")
+print("Start train model")
 myModel.fit_generator(
    train_generator,
    steps_per_epoch=qty_train_samples/batch_size,
@@ -50,7 +50,7 @@ myModel.fit_generator(
    verbose=2
 )
 
-# serialize model to JSON
+# serialize model to JSON 
 model_json = myModel.to_json()
 with open("cnn/model.json", "w") as json_file:
     json_file.write(model_json)
