@@ -1,11 +1,6 @@
 from keras.preprocessing.image import ImageDataGenerator
-from keras.models import Sequential
-from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, Activation
-from keras import backend as K
 import numpy as np
-from keras.preprocessing import image
 import os
-
 import model
 
 #PARAMETER
