@@ -1,7 +1,8 @@
 from keras.models import model_from_json
 import os
 from keras import backend as K
-import tensorflow.compat.v1 import ConfigProto,InteractiveSession
+from tensorflow.compat.v1 import ConfigProto,InteractiveSession
+import tensorflow as tf
 
 #PARAMETER
 img_width, img_height = 200,200
@@ -55,11 +56,14 @@ def load_model(filename):
 #GPU config
 def GPUConf():
     config = ConfigProto()
+    config.gpu_options.per_process_gpu_memory_fraction = 0.4
     config.gpu_options.allow_growth = True
     session = InteractiveSession(config=config)
+    #K.set_session(session)
 #use CPU, disable GPU
 def disableGPU():
     os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+#disable or enable GPU. set False to disable GPU
 def useGPU(state=True):
     if state:
         GPUConf()

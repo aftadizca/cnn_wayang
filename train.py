@@ -7,10 +7,10 @@ import model
 from param import img_height,img_width,train_dirs,valid_dirs,\
      qty_train_samples,qty_valid_samples,load_model,GPUConf,useGPU
 
-useGPU(False)
+useGPU(True)
 
 #CHANGE THIS
-model_name = "model3"
+model_name = "model4"
 #PARAMETER
 logdir = "logs/scalars/" + model_name +"-"+datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callbacks = TensorBoard(log_dir=logdir)
