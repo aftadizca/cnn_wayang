@@ -1,17 +1,30 @@
 from keras.preprocessing.image import ImageDataGenerator
+from keras.callbacks import TensorBoard, ModelCheckpoint
 import numpy as np
+from datetime import datetime
 import os
 import model
+from param import img_height,img_width,train_dirs,valid_dirs,\
+     qty_train_samples,qty_valid_samples,load_model,GPUConf,useGPU
 
+useGPU(False)
+
+#CHANGE THIS
+model_name = "model3"
 #PARAMETER
-img_width, img_height = 128,128
-train_data_dir = os.getcwd()+'/cnn/traindata/train'
-valid_data_dir = os.getcwd()+'/cnn/traindata/valid'
-qty_train_samples = 180
-qty_valid_samples = 30
-epochs = 50
+logdir = "logs/scalars/" + model_name +"-"+datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callbacks = TensorBoard(log_dir=logdir)
+qty_train_samples = qty_train_samples()
+qty_valid_samples = qty_valid_samples()
+
+
+#input epochs
+try:
+    epochs = int(input("Input epoch [default:50] : "))
+except ValueError:
+    epochs = 50
+
 batch_size = 10
-#qty_class = 4
 
 train_datagen = ImageDataGenerator(
     rescale=1./255,
@@ -22,7 +35,7 @@ train_datagen = ImageDataGenerator(
 valid_datagen = ImageDataGenerator(rescale=1./255)
 
 train_generator = train_datagen.flow_from_directory(
-    train_data_dir,
+    train_dirs,
     color_mode='grayscale',
     target_size=(img_width, img_height),
     batch_size=batch_size,
@@ -30,15 +43,16 @@ train_generator = train_datagen.flow_from_directory(
 )
 
 valid_generator = valid_datagen.flow_from_directory(
-    valid_data_dir,
+    valid_dirs,
     color_mode='grayscale',
     target_size=(img_width, img_height),
     batch_size=batch_size,
     class_mode='categorical'
 )
 
-myModel = model.createModel()
+myModel = load_model(model_name) or model.createModel()
 #myModel.summary()
+checkpointer = ModelCheckpoint(filepath=model_name+'.h5', monitor='val_loss',verbose=1, save_best_only=True, mode='auto')
 
 print("Start train model")
 myModel.fit_generator(
@@ -47,13 +61,15 @@ myModel.fit_generator(
    epochs=epochs,
    validation_data=valid_generator,
    validation_steps=qty_valid_samples/batch_size,
-   verbose=2
+   verbose=2,
+   callbacks=[tensorboard_callbacks,checkpointer]
 )
 
 # serialize model to JSON 
+print("Saving model...!")
 model_json = myModel.to_json()
-with open("cnn/model.json", "w") as json_file:
+with open(model_name+".json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-myModel.save_weights("cnn/model.h5")
-print("Saved model to disk drive")
+#myModel.save_weights(model_name+".h5")
+#print("Saved "+model_name+" to disk drive")
