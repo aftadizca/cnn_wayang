@@ -18,16 +18,16 @@ labels = [dirs for path,dirs,filename in os.walk(train_dirs)][0]
 #count training sample
 def qty_train_samples():
     count = 0
-    for path,dirs,filename in os.walk(train_dirs):
-        for name in filename:
+    for _,_,filename in os.walk(train_dirs):
+        for _ in filename:
             count+=1
     print("File in %s = %s" % (train_dirs,count))
     return count
 #count validation sample
 def qty_valid_samples():
     count = 0
-    for path,dirs,filename in os.walk(valid_dirs):
-        for name in filename:
+    for _,_,filename in os.walk(valid_dirs):
+        for _ in filename:
             count+=1
     print("File in %s = %s" % (valid_dirs,count))
     return count
@@ -69,3 +69,25 @@ def useGPU(state=True):
         GPUConf()
     else:
         disableGPU()
+
+class Config:
+    def __init__(self):
+        self.model = self.Models()
+        self.img = self.Images()
+        self.dirs = self.Dirs()
+
+    class Models:
+        def __init__(self):
+            self.qty_class = 3
+            self.optimizer = 'adam'
+
+    class Images:
+        def __init__(self):
+            self.width = 200
+            self.height = 200
+
+    class Dirs:
+        def __init__(self):
+            self.train = 'traindata/train'
+            self.validation = 'traindata/valid'
+            self.test = 'traindata/test'

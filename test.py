@@ -1,15 +1,17 @@
-from keras.models import model_from_json
+from keras.models import model_from_json, load_model
 from keras_preprocessing import image
 import os
 import numpy as np
-from param import img_height,img_width,load_model,GPUConf,test_dirs,labels,\
+from param import img_height,img_width,GPUConf,test_dirs,labels,\
     useGPU
 import sys
 
 
 useGPU(False)
 # load json and create model
-loaded_model = load_model("model3") or quit()
+loaded_model = load_model("model3-all") or quit()
+
+#loaded_model.save('model3-all')
 
 for p,d,f in os.walk(test_dirs):
     for name in f:

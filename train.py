@@ -1,11 +1,12 @@
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import TensorBoard, ModelCheckpoint
+from keras.models import load_model
 import numpy as np
 from datetime import datetime
 import os
 import model
 from param import img_height,img_width,train_dirs,valid_dirs,\
-     qty_train_samples,qty_valid_samples,load_model,GPUConf,useGPU
+     qty_train_samples,qty_valid_samples,GPUConf,useGPU
 
 useGPU(True)
 
@@ -66,10 +67,10 @@ myModel.fit_generator(
 )
 
 # serialize model to JSON 
-print("Saving model...!")
-model_json = myModel.to_json()
-with open(model_name+".json", "w") as json_file:
-    json_file.write(model_json)
+# print("Saving model...!")
+# model_json = myModel.to_json()
+# with open(model_name+".json", "w") as json_file:
+#     json_file.write(model_json)
 # serialize weights to HDF5
 #myModel.save_weights(model_name+".h5")
 #print("Saved "+model_name+" to disk drive")
