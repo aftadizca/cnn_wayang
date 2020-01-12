@@ -23,6 +23,7 @@ class Config:
         def __init__(self):
             self.qty_class = 3
             self.optimizer = 'adam'
+            self.batchSize = 10
 
     class Images:
         def __init__(self):
@@ -35,7 +36,7 @@ class Config:
             self.train_path = 'traindata/train'
             self.validation_path = 'traindata/valid'
             self.test_path = 'traindata/test'
-
+            self.log_path = 'logs/scalars/'
             self.labels = [dirs for path,dirs,filename in os.walk(self.train_path)][0]
             self.class_count = len(self.labels)
 
