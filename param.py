@@ -13,24 +13,43 @@ valid_dirs = "traindata/valid/"
 test_dirs = "traindata/test/"
 optimizer ='adam'
 
-#label classes
-labels = [dirs for path,dirs,filename in os.walk(train_dirs)][0]
-#count training sample
-def qty_train_samples():
-    count = 0
-    for _,_,filename in os.walk(train_dirs):
-        for _ in filename:
-            count+=1
-    print("File in %s = %s" % (train_dirs,count))
-    return count
+class Config:
+    def __init__(self):
+        self.model = self.Models()
+        self.img = self.Images()
+        self.dirs = self.Dirs()
+
+    class Models:
+        def __init__(self):
+            self.qty_class = 3
+            self.optimizer = 'adam'
+
+    class Images:
+        def __init__(self):
+            self.width = 200
+            self.height = 200
+            self.color_mode = 'grayscale'
+
+    class Dirs:
+        def __init__(self):
+            self.train_path = 'traindata/train'
+            self.validation_path = 'traindata/valid'
+            self.test_path = 'traindata/test'
+
+            self.labels = [dirs for path,dirs,filename in os.walk(self.train_path)][0]
+            self.class_count = len(self.labels)
+
 #count validation sample
-def qty_valid_samples():
-    count = 0
-    for _,_,filename in os.walk(valid_dirs):
-        for _ in filename:
-            count+=1
-    print("File in %s = %s" % (valid_dirs,count))
-    return count
+def count_files(path):
+    try:
+        count = 0
+        for _,_,filename in os.walk(path):
+            for _ in filename:
+                count+=1
+        print("File in %s = %s" % (path,count))
+        return count
+    except:
+        return 0
 #loading model, return False when no model file found
 def load_model(filename):
     try: 
@@ -69,25 +88,3 @@ def useGPU(state=True):
         GPUConf()
     else:
         disableGPU()
-
-class Config:
-    def __init__(self):
-        self.model = self.Models()
-        self.img = self.Images()
-        self.dirs = self.Dirs()
-
-    class Models:
-        def __init__(self):
-            self.qty_class = 3
-            self.optimizer = 'adam'
-
-    class Images:
-        def __init__(self):
-            self.width = 200
-            self.height = 200
-
-    class Dirs:
-        def __init__(self):
-            self.train = 'traindata/train'
-            self.validation = 'traindata/valid'
-            self.test = 'traindata/test'
