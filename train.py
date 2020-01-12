@@ -5,18 +5,17 @@ import numpy as np
 from datetime import datetime
 import os
 import model
-from param import img_height,img_width,train_dirs,valid_dirs,\
-     qty_train_samples,qty_valid_samples,GPUConf,useGPU
+from param import Config, useGPU, count_files
 
-useGPU(True)
-
+useGPU(False)
+cfg = Config()
 #CHANGE THIS
-model_name = "model4"
+modelName = "model5"
 #PARAMETER
-logdir = "logs/scalars/" + model_name +"-"+datetime.now().strftime("%Y%m%d-%H%M%S")
+logdir = cfg.dirs.log_path + modelName +"-"+datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callbacks = TensorBoard(log_dir=logdir)
-qty_train_samples = qty_train_samples()
-qty_valid_samples = qty_valid_samples()
+qty_train_samples = count_files(cfg.dirs.train_path)
+qty_valid_samples = count_files(cfg.dirs.validation_path)
 
 
 #input epochs
@@ -24,8 +23,6 @@ try:
     epochs = int(input("Input epoch [default:50] : "))
 except ValueError:
     epochs = 50
-
-batch_size = 10
 
 train_datagen = ImageDataGenerator(
     rescale=1./255,
@@ -36,32 +33,35 @@ train_datagen = ImageDataGenerator(
 valid_datagen = ImageDataGenerator(rescale=1./255)
 
 train_generator = train_datagen.flow_from_directory(
-    train_dirs,
+    cfg.dirs.train_path,
     color_mode='grayscale',
-    target_size=(img_width, img_height),
-    batch_size=batch_size,
+    target_size=(cfg.img.width, cfg.img.height),
+    batch_size=cfg.model.batchSize,
     class_mode='categorical'
 )
 
 valid_generator = valid_datagen.flow_from_directory(
-    valid_dirs,
+    cfg.dirs.validation_path,
     color_mode='grayscale',
-    target_size=(img_width, img_height),
-    batch_size=batch_size,
+    target_size=(cfg.img.width, cfg.img.height),
+    batch_size=cfg.model.batchSize,
     class_mode='categorical'
 )
 
-myModel = load_model(model_name) or model.createModel()
+try:
+    myModel = load_model(modelName+'.h5')
+except:
+    myModel = model.createModel()
 #myModel.summary()
-checkpointer = ModelCheckpoint(filepath=model_name+'.h5', monitor='val_loss',verbose=1, save_best_only=True, mode='auto')
+checkpointer = ModelCheckpoint(filepath=modelName+'.h5', monitor='val_loss',verbose=1, save_best_only=True, mode='auto')
 
 print("Start train model")
 myModel.fit_generator(
    train_generator,
-   steps_per_epoch=qty_train_samples/batch_size,
+   steps_per_epoch=qty_train_samples/cfg.model.batchSize,
    epochs=epochs,
    validation_data=valid_generator,
-   validation_steps=qty_valid_samples/batch_size,
+   validation_steps=qty_valid_samples/cfg.model.batchSize,
    verbose=2,
    callbacks=[tensorboard_callbacks,checkpointer]
 )
