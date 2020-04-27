@@ -6,12 +6,11 @@ from param import Config, useGPU
 import sys
 
 cfg = Config()
-
+cfg.img.width = 128
+cfg.img.height = 128
 useGPU(False)
 # load json and create model
-loaded_model = load_model("model3-all.h5") or quit()
-
-#loaded_model.save('model3-all')
+loaded_model = load_model("model5.h5") or quit()
 
 for p,d,f in os.walk(cfg.dirs.test_path):
     for name in f:
@@ -24,5 +23,5 @@ for p,d,f in os.walk(cfg.dirs.test_path):
 
         result = loaded_model.predict(img_predict)
         print(result)
-        for x in range(0,3):
+        for x in range(0,4):
             print("%s : %.3f%%" % (cfg.dirs.labels[x].upper(),result[0][x]*100))

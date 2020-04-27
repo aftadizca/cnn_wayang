@@ -7,10 +7,12 @@ import os
 import model
 from param import Config, useGPU, count_files
 
-useGPU(False)
+useGPU(True)
 cfg = Config()
+cfg.img.height = 128
+cfg.img.width = 128
 #CHANGE THIS
-modelName = "model5"
+modelName = "model6" ####################################change this
 #PARAMETER
 logdir = cfg.dirs.log_path + modelName +"-"+datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callbacks = TensorBoard(log_dir=logdir)
@@ -28,6 +30,9 @@ train_datagen = ImageDataGenerator(
     rescale=1./255,
     shear_range=0.2,
     zoom_range=0.2,
+    rotation_range=30,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
     horizontal_flip=True
 )
 valid_datagen = ImageDataGenerator(rescale=1./255)
@@ -51,9 +56,9 @@ valid_generator = valid_datagen.flow_from_directory(
 try:
     myModel = load_model(modelName+'.h5')
 except:
-    myModel = model.createModel()
+    myModel = model.createModel3() ########################################change this
 #myModel.summary()
-checkpointer = ModelCheckpoint(filepath=modelName+'.h5', monitor='val_loss',verbose=1, save_best_only=True, mode='auto')
+checkpointer = ModelCheckpoint(filepath=modelName+'.h5', monitor='val_loss',verbose=0, save_best_only=True, mode='auto')
 
 print("Start train model")
 myModel.fit_generator(

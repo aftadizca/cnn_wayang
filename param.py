@@ -5,8 +5,8 @@ from tensorflow.compat.v1 import ConfigProto,InteractiveSession
 import tensorflow as tf
 
 #PARAMETER
-img_width, img_height = 200,200
-qty_class = 3
+img_width, img_height = 128,128
+qty_class = 4
 root="traindata"
 train_dirs = "traindata/train/"
 valid_dirs = "traindata/valid/"
