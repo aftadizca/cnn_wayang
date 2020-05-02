@@ -2,5 +2,6 @@
 *.jpeg
 *.JPG
 *.h5
+*.tflite
 __pycache__
 logs
